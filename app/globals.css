@@ -1,0 +1,141 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* CLI Theme Colors */
+  --color-bg-primary: #0a0a0a;
+  --color-bg-elevated: #0f0f0f;
+  --color-bg-card: #1a1a1a;
+  --color-bg-footer: #080808;
+  
+  --color-border-subtle: #1a1a1a;
+  --color-border-default: #2a2a2a;
+  --color-border-strong: #3a3a3a;
+  
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted: #666666;
+  --color-text-disabled: #333333;
+  
+  --color-accent-cyan: #00d4ff;
+  --color-accent-green: #00ff88;
+  --color-accent-yellow: #ffcc00;
+  --color-accent-red: #ff4444;
+  --color-accent-purple: #8888ff;
+  
+  /* Fonts */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  
+  /* Default theme variables for shadcn compatibility */
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--text-primary);
+  --color-border: var(--border-default);
+  --color-accent: var(--accent-cyan);
+  --color-accent-foreground: var(--text-primary);
+  --color-ring: var(--accent-cyan);
+}
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-elevated: #0f0f0f;
+  --bg-card: #1a1a1a;
+  --bg-footer: #080808;
+  
+  --border-subtle: #1a1a1a;
+  --border-default: #2a2a2a;
+  --border-strong: #3a3a3a;
+  
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted: #666666;
+  --text-disabled: #333333;
+  
+  --accent-cyan: #00d4ff;
+  --accent-green: #00ff88;
+  --accent-yellow: #ffcc00;
+  --accent-red: #ff4444;
+  --accent-purple: #8888ff;
+  
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #1a1a1a;
+  --card-foreground: #ffffff;
+  --border: #2a2a2a;
+  --ring: #00d4ff;
+  --accent: #00d4ff;
+  --accent-foreground: #ffffff;
+}
+
+* {
+  border-color: var(--border-default);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+@layer utilities {
+  /* CLI-style scrollbar */
+  .scrollbar-cli {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  
+  .scrollbar-cli::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .scrollbar-cli::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-cli::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border: 1px solid var(--bg-primary);
+  }
+  
+  .scrollbar-cli::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+  
+  /* Sharp corners utility */
+  .sharp {
+    border-radius: 0 !important;
+  }
+  
+  /* CLI hover effects */
+  .cli-hover {
+    transition: all 0.15s ease;
+  }
+  
+  .cli-hover:hover {
+    background: var(--bg-card);
+    border-color: var(--accent-cyan);
+  }
+  
+  /* Glowing border effect */
+  .glow-border {
+    box-shadow: 0 0 0 1px var(--border-default);
+  }
+  
+  .glow-border:hover {
+    box-shadow: 0 0 10px 1px var(--accent-cyan);
+  }
+  
+  /* Blinking cursor animation */
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  
+  .cursor-blink {
+    animation: blink 1s infinite;
+  }
+}
