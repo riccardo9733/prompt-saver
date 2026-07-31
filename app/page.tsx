@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { usePrompts } from '@/hooks/use-prompts'
+import { PromptForm, PromptFormData } from '@/components/cli/prompt-form'
 import { Prompt } from '@/types/prompt'
 import { 
   Plus, 
@@ -18,7 +19,6 @@ import {
   X,
   Check,
   Terminal,
-  Save,
   Star as StarFill,
   Settings,
   Filter
@@ -46,7 +46,7 @@ export default function Home() {
     toggleFavoritePrompt,
   } = usePrompts()
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PromptFormData>({
     title: '',
     content: '',
     category: '',
@@ -341,94 +341,16 @@ export default function Home() {
             </Card>
           )}
 
-          {/* Create/Edit Form */}
-          {(isCreating || editingId) && (
-            <Card className="sharp bg-[#0f0f0f] border-[#2a2a2a]">
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xs uppercase text-[#666] font-mono">
-                    // {editingId ? 'Edit Prompt' : 'Create New Prompt'}
-                  </CardTitle>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={resetForm}
-                    className="p-1 h-auto"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="block text-xs uppercase text-[#666] mb-1 font-mono">
-                    Title *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#3a3a3a] px-4 py-2 text-sm text-[#ffffff] focus:outline-none focus:border-[#00d4ff] sharp font-mono"
-                    placeholder="Enter prompt title..."
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-xs uppercase text-[#666] mb-1 font-mono">
-                    Category
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#3a3a3a] px-4 py-2 text-sm text-[#ffffff] focus:outline-none focus:border-[#00d4ff] sharp font-mono"
-                    placeholder="e.g., Work, Code, Writing..."
-                    list="category-suggestions"
-                  />
-                  <datalist id="category-suggestions">
-                    {categories.map(cat => (
-                      <option key={cat} value={cat} />
-                    ))}
-                  </datalist>
-                </div>
-                
-                <div>
-                  <label className="block text-xs uppercase text-[#666] mb-1 font-mono">
-                    Tags <span className="text-[#333333]">(comma separated)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.tagsInput}
-                    onChange={(e) => setFormData({ ...formData, tagsInput: e.target.value })}
-                    className="w-full bg-[#0a0a0a] border border-[#3a3a3a] px-4 py-2 text-sm text-[#ffffff] focus:outline-none focus:border-[#00d4ff] sharp font-mono"
-                    placeholder="e.g., python, automation, review..."
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-xs uppercase text-[#666] mb-1 font-mono">
-                    Content *
-                  </label>
-                  <textarea
-                    value={formData.content}
-                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    className="w-full h-48 bg-[#0a0a0a] border border-[#3a3a3a] p-4 text-sm text-[#ffffff] font-mono focus:outline-none focus:border-[#00d4ff] sharp resize-none"
-                    placeholder="Enter your prompt content..."
-                  />
-                </div>
-                
-                <div className="flex justify-end gap-2">
-                  <Button variant="ghost" onClick={resetForm} size="sm">
-                    CANCEL
-                  </Button>
-                  <Button variant="accent" onClick={handleSave} size="sm">
-                    <Save className="w-4 h-4 mr-2" />
-                    SAVE
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {/* Create/Edit Drawer */}
+          <PromptForm
+            open={isCreating || editingId !== null}
+            editingId={editingId}
+            formData={formData}
+            categories={categories}
+            onChange={setFormData}
+            onSave={handleSave}
+            onClose={resetForm}
+          />
         </div>
       </div>
 
