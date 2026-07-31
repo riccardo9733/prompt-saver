@@ -8,7 +8,6 @@ export function usePrompts() {
   const [prompts, setPrompts] = useState<Prompt[]>([])
   const [filter, setFilter] = useState<FilterState>({
     search: '',
-    category: '',
     favoritesOnly: false,
     sort: 'newest',
   })
@@ -24,8 +23,8 @@ export function usePrompts() {
     setPrompts(storage.getStoredPrompts())
   }, [])
 
-  const addPrompt = useCallback((title: string, content: string, category: string, tags: string[]) => {
-    const newPrompt = storage.createPrompt(title, content, category, tags)
+  const addPrompt = useCallback((title: string, content: string, tags: string[]) => {
+    const newPrompt = storage.createPrompt(title, content, tags)
     setPrompts(prev => [...prev, newPrompt])
     return newPrompt
   }, [])
@@ -56,7 +55,6 @@ export function usePrompts() {
 
   const filteredPrompts = prompts.filter(prompt => {
     if (filter.favoritesOnly && !prompt.favorite) return false
-    if (filter.category && prompt.category !== filter.category) return false
     if (filter.search) {
       const search = filter.search.toLowerCase()
       return (
@@ -74,20 +72,16 @@ export function usePrompts() {
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       case 'title':
         return a.title.localeCompare(b.title)
-      case 'category':
-        return a.category.localeCompare(b.category)
       default:
         return 0
     }
   })
 
-  const categories = Array.from(new Set(prompts.map(p => p.category))).sort()
   const allTags = Array.from(new Set(prompts.flatMap(p => p.tags))).sort()
 
   return {
     prompts: filteredPrompts,
     allPrompts: prompts,
-    categories,
     allTags,
     filter,
     loading,

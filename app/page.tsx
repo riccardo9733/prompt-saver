@@ -36,7 +36,6 @@ export default function Home() {
   const {
     prompts,
     allPrompts,
-    categories,
     filter,
     loading,
     setFilter,
@@ -49,12 +48,11 @@ export default function Home() {
   const [formData, setFormData] = useState<PromptFormData>({
     title: '',
     content: '',
-    category: '',
     tagsInput: '',
   })
 
   const resetForm = () => {
-    setFormData({ title: '', content: '', category: '', tagsInput: '' })
+    setFormData({ title: '', content: '', tagsInput: '' })
     setIsCreating(false)
     setEditingId(null)
   }
@@ -68,7 +66,6 @@ export default function Home() {
     setFormData({
       title: prompt.title,
       content: prompt.content,
-      category: prompt.category,
       tagsInput: prompt.tags.join(', '),
     })
     setEditingId(prompt.id)
@@ -88,14 +85,12 @@ export default function Home() {
       editPrompt(editingId, {
         title: formData.title,
         content: formData.content,
-        category: formData.category || 'General',
         tags,
       })
     } else {
       addPrompt(
         formData.title,
         formData.content,
-        formData.category || 'General',
         tags
       )
     }
@@ -154,17 +149,6 @@ export default function Home() {
       hour: '2-digit',
       minute: '2-digit',
     })
-  }
-
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      'General': '#00d4ff',
-      'Work': '#00ff88',
-      'Personal': '#ffcc00',
-      'Code': '#8888ff',
-      'Writing': '#ff4444',
-    }
-    return colors[category] || '#666666'
   }
 
   if (loading) {
@@ -261,34 +245,20 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Filter Categories - Scrollable */}
+          {/* Filters - Scrollable */}
           {showFilters && (
             <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-cli">
               <button
-                onClick={() => setFilter({ ...filter, category: '', favoritesOnly: false })}
+                onClick={() => setFilter({ ...filter, favoritesOnly: false })}
                 className={cn(
                   'px-4 py-2 text-xs whitespace-nowrap sharp border transition-colors uppercase font-mono',
-                  filter.category === '' && !filter.favoritesOnly
+                  !filter.favoritesOnly
                     ? 'bg-[#1a1a1a] border-[#00d4ff] text-[#00d4ff]' 
                     : 'bg-[#0a0a0a] border-[#3a3a3a] text-[#a0a0a0] hover:bg-[#1a1a1a]'
                 )}
               >
                 All
               </button>
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setFilter({ ...filter, category: cat, favoritesOnly: false })}
-                  className={cn(
-                    'px-4 py-2 text-xs whitespace-nowrap sharp border transition-colors uppercase font-mono',
-                    filter.category === cat 
-                      ? 'bg-[#1a1a1a] border-[#00d4ff] text-[#00d4ff]' 
-                      : 'bg-[#0a0a0a] border-[#3a3a3a] text-[#a0a0a0] hover:bg-[#1a1a1a]'
-                  )}
-                >
-                  {cat}
-                </button>
-              ))}
               <button
                 onClick={() => setFilter({ ...filter, favoritesOnly: !filter.favoritesOnly })}
                 className={cn(
@@ -346,7 +316,6 @@ export default function Home() {
             open={isCreating || editingId !== null}
             editingId={editingId}
             formData={formData}
-            categories={categories}
             onChange={setFormData}
             onSave={handleSave}
             onClose={resetForm}
@@ -395,16 +364,6 @@ export default function Home() {
                       )}
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Badge 
-                        variant="outline" 
-                        className="text-[10px] sharp font-mono"
-                        style={{ 
-                          borderColor: getCategoryColor(prompt.category),
-                          color: getCategoryColor(prompt.category)
-                        }}
-                      >
-                        {prompt.category}
-                      </Badge>
                       {prompt.tags.slice(0, 3).map(tag => (
                         <Badge 
                           key={tag} 

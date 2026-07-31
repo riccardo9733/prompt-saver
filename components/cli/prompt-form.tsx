@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils'
 export interface PromptFormData {
   title: string
   content: string
-  category: string
   tagsInput: string
 }
 
@@ -27,7 +26,6 @@ interface PromptFormProps {
   open: boolean
   editingId: string | null
   formData: PromptFormData
-  categories: string[]
   onChange: (data: PromptFormData) => void
   onSave: () => void
   onClose: () => void
@@ -48,11 +46,9 @@ const inputClass =
 
 function FormFields({
   formData,
-  categories,
   onChange,
 }: {
   formData: PromptFormData
-  categories: string[]
   onChange: (data: PromptFormData) => void
 }) {
   return (
@@ -68,25 +64,6 @@ function FormFields({
           className={inputClass}
           placeholder="Enter prompt title..."
         />
-      </div>
-
-      <div>
-        <label className="block text-xs uppercase text-[#666] mb-1 font-mono">
-          Category
-        </label>
-        <input
-          type="text"
-          value={formData.category}
-          onChange={(e) => onChange({ ...formData, category: e.target.value })}
-          className={inputClass}
-          placeholder="e.g., Work, Code, Writing..."
-          list="category-suggestions"
-        />
-        <datalist id="category-suggestions">
-          {categories.map((cat) => (
-            <option key={cat} value={cat} />
-          ))}
-        </datalist>
       </div>
 
       <div>
@@ -121,7 +98,6 @@ export function PromptForm({
   open,
   editingId,
   formData,
-  categories,
   onChange,
   onSave,
   onClose,
@@ -187,7 +163,7 @@ export function PromptForm({
 
               <DrawerContent className="flex-1 px-4 py-4 sm:px-5 scrollbar-cli">
                 <div className="mx-auto w-full max-w-[32rem] space-y-4">
-                  <FormFields formData={formData} categories={categories} onChange={onChange} />
+                  <FormFields formData={formData} onChange={onChange} />
                 </div>
               </DrawerContent>
 

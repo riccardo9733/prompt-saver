@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { Terminal as TerminalIcon, Settings, FolderOpen, FileText, GitBranch, X } from 'lucide-react'
+import { Terminal as TerminalIcon, Settings, FileText, X } from 'lucide-react'
 
 interface SidebarProps {
   className?: string
@@ -67,7 +67,6 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
             </div>
             <div className="space-y-0.5">
               <SidebarItem icon={<TerminalIcon className="w-4 h-4" />} label="All Prompts" active count={42} />
-              <SidebarItem icon={<FolderOpen className="w-4 h-4" />} label="Categories" />
               <SidebarItem icon={<FileText className="w-4 h-4" />} label="Tags" />
             </div>
           </div>
@@ -78,7 +77,6 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
               // ──── filters ────
             </div>
             <div className="space-y-0.5">
-              <SidebarItem icon={<GitBranch className="w-4 h-4" />} label="By Category" />
               <SidebarItem icon={<Settings className="w-4 h-4" />} label="By Tag" />
             </div>
           </div>
