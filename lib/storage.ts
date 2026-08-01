@@ -8,12 +8,45 @@ function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 }
 
+function migratePrompt(prompt: Prompt): Prompt {
+  const legacy = prompt as Prompt & { category?: string }
+  if (legacy.category === undefined) return prompt
+
+  const tags = Array.isArray(prompt.tags) ? [...prompt.tags] : []
+  const category = legacy.category
+  if (category.trim() && category !== 'General' && !tags.includes(category)) {
+    tags.push(category)
+  }
+
+  return {
+    id: prompt.id,
+    title: prompt.title,
+    content: prompt.content,
+    tags,
+    createdAt: prompt.createdAt,
+    updatedAt: prompt.updatedAt,
+    favorite: prompt.favorite,
+  }
+}
+
 export function getStoredPrompts(): Prompt[] {
   if (typeof window === 'undefined') return []
   
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : []
+    if (!stored) return []
+
+    const parsed = JSON.parse(stored)
+    if (!Array.isArray(parsed)) return []
+
+    let migrated = false
+    const prompts = parsed.map((prompt: Prompt) => {
+      const cleaned = migratePrompt(prompt)
+      if (cleaned !== prompt) migrated = true
+      return cleaned
+    })
+    if (migrated) savePrompts(prompts)
+    return prompts
   } catch (error) {
     console.error('Error reading prompts from storage:', error)
     return []
@@ -30,13 +63,12 @@ export function savePrompts(prompts: Prompt[]): void {
   }
 }
 
-export function createPrompt(title: string, content: string, category: string, tags: string[]): Prompt {
+export function createPrompt(title: string, content: string, tags: string[]): Prompt {
   const now = new Date().toISOString()
   const prompt: Prompt = {
     id: generateId(),
     title,
     content,
-    category,
     tags,
     createdAt: now,
     updatedAt: now,
@@ -87,12 +119,6 @@ export function toggleFavorite(id: string): Prompt | null {
   
   savePrompts(prompts)
   return prompts[index]
-}
-
-export function getAllCategories(): string[] {
-  const prompts = getStoredPrompts()
-  const categories = new Set(prompts.map(p => p.category))
-  return Array.from(categories).sort()
 }
 
 export function getAllTags(): string[] {
